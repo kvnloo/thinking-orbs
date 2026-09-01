@@ -9,6 +9,7 @@ import { frameGlobe, frameRubik, frameWave } from './lattice';
 import { frameMorph } from './morph';
 import { frameOrbits } from './orbits';
 import { frameRibbon } from './ribbon';
+import { frameTwist } from './twist';
 import { frameWeb } from './web';
 
 /**
@@ -21,6 +22,7 @@ export const MODE_FRAMES: Record<ModeKey, ModeFrame> = {
   globe: frameGlobe,
   rubik: frameRubik,
   wave: frameWave,
+  twist: frameTwist,
   web: frameWeb,
   braid: frameBraid,
   ribbon: frameRibbon,

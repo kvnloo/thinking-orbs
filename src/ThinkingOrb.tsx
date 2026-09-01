@@ -16,6 +16,7 @@ const LABELS: Record<string, string> = {
   composing: 'Composing…',
   breathing: 'Thinking…',
   shaping: 'Shaping…',
+  cleaning: 'Cleaning…',
   success: 'Complete',
   error: 'Error'
 };
