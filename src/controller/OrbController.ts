@@ -35,6 +35,7 @@ export class OrbController {
   private speed: number;
   private paused: boolean;
   private reducedMotion: boolean;
+  private color?: string;
   private readonly seed: number;
   private readonly scheduler: OrbScheduler;
   private readonly ctx: CanvasRenderingContext2D;
@@ -68,6 +69,7 @@ export class OrbController {
     this.speed = options.speed ?? 1;
     this.paused = options.paused ?? false;
     this.reducedMotion = options.reducedMotion ?? false;
+    this.color = options.color;
     this.seed = options.seed ?? 1;
     this.scheduler = options.scheduler ?? createDefaultScheduler();
     this.loop = new OrbRenderLoop(this.scheduler, (now) => this.renderAt(now));
@@ -176,7 +178,7 @@ export class OrbController {
     updateInteraction(this.interaction, this.interactionConfig, now, this.reducedMotion);
     const visual = applyInteraction(base, this.size, this.interactionConfig, this.interaction);
     this.lastVisual = visual;
-    paintFrame(this.ctx, visual, this.size, this.dpr, this.dark);
+    paintFrame(this.ctx, visual, this.size, this.dpr, this.dark, this.color);
   }
 
   on(type: TransitionEventName, listener: TransitionListener): () => void {
@@ -200,10 +202,12 @@ export class OrbController {
     this.profiles[name] = profile;
   }
 
-  setAppearance(options: { dark?: boolean; speed?: number; paused?: boolean; reducedMotion?: boolean }): void {
+
+  setAppearance(options: { dark?: boolean; speed?: number; paused?: boolean; reducedMotion?: boolean; color?: string | null }): void {
     if (options.dark != null) this.dark = options.dark;
     if (options.speed != null) this.speed = options.speed;
     if (options.paused != null) this.paused = options.paused;
+    if (options.color !== undefined) this.color = options.color ?? undefined;
     if (options.reducedMotion != null) {
       this.reducedMotion = options.reducedMotion;
       if (this.reducedMotion && this.active) this.finishActive();

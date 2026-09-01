@@ -25,6 +25,7 @@ export function ThinkingOrb({
   state = 'working',
   size = 64,
   theme = 'auto',
+  color,
   speed = 1,
   paused = false,
   transition,
@@ -63,7 +64,8 @@ export function ThinkingOrb({
       transitionPresets,
       interaction,
       stateProfiles,
-      seed
+      seed,
+      color
     };
   }
 
@@ -97,8 +99,8 @@ export function ThinkingOrb({
 
   useEffect(() => controller.current?.setSize(size), [size]);
   useEffect(
-    () => controller.current?.setAppearance({ dark, speed, paused, reducedMotion: effectiveReduced }),
-    [dark, speed, paused, effectiveReduced]
+    () => controller.current?.setAppearance({ dark, speed, paused, reducedMotion: effectiveReduced, color: color ?? null }),
+    [dark, speed, paused, effectiveReduced, color]
   );
   useEffect(() => {
     controller.current?.setInteraction(interaction ?? {});

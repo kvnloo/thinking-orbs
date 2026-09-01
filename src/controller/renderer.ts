@@ -51,7 +51,8 @@ export function paintFrame(
   frame: CapturedFrame,
   size: number,
   dpr: number,
-  dark: boolean
+  dark: boolean,
+  color?: string
 ): void {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, size, size);
@@ -59,7 +60,9 @@ export function paintFrame(
   paint(
     ctx,
     frame.particles.map(({ x, y, z, r, white, a, rgb }) => ({ x, y, z, r, white, a, rgb })),
-    dark
+    dark,
+    undefined,
+    color
   );
 }
 

@@ -59,6 +59,9 @@ export interface OrbCanvas2D {
   moveTo(x: number, y: number): void;
   lineTo(x: number, y: number): void;
   stroke(): void;
+  save?(): void;
+  restore?(): void;
+  globalAlpha?: number;
 }
 
 export function lerp(a: number, b: number, f: number): number {
@@ -122,12 +125,30 @@ export function makeProj(yaw: number, tilt: number, cx: number, cy: number, scal
 /**
  * Painter: z-sort far→near, matte grayscale dots. On dark substrates the
  * ink value is mirrored (1 - white) so near dots read bright — the same
- * depth language on an inverted substrate.
+ * depth language on an inverted substrate. When a tint is supplied, that
+ * same ink weight becomes opacity so the selected hue keeps its 3D depth.
  */
-export function paint(ctx: OrbCanvas2D, dots: Dot[], dark: boolean, rMin = 0.3): void {
+export function paint(ctx: OrbCanvas2D, dots: Dot[], dark: boolean, rMin = 0.3, color?: string): void {
   const capture = getFrameCapture(ctx);
   if (capture) {
     capture.dots.push(...dots.map((dot) => ({ ...dot })));
+    return;
+  }
+  if (color && ctx.save && ctx.restore) {
+    ctx.save();
+    const baseAlpha = ctx.globalAlpha ?? 1;
+    ctx.fillStyle = color;
+    for (const d of dots) {
+      const alpha = d.a ?? 1;
+      const w = Math.min(1, Math.max(0, d.white));
+      const tintAlpha = alpha * (1 - w);
+      if (tintAlpha < 0.02) continue;
+      ctx.globalAlpha = baseAlpha * tintAlpha;
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
     return;
   }
   for (const d of dots) {
@@ -202,9 +223,9 @@ export function finalizeFrame(dots: Dot[], lines: Line[], rMin = 0.3): OrbFrame 
 }
 
 /** Paint a finished frame. Lines first, so nodes sit on top of their edges. */
-export function paintFrame(ctx: OrbCanvas2D, frame: OrbFrame, dark: boolean): void {
+export function paintFrame(ctx: OrbCanvas2D, frame: OrbFrame, dark: boolean, color?: string): void {
   if (frame.lines.length) paintLines(ctx, frame.lines, dark);
-  paint(ctx, frame.dots, dark);
+  paint(ctx, frame.dots, dark, undefined, color);
 }
 
 /**

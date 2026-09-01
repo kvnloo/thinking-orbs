@@ -109,6 +109,7 @@ export interface OrbControllerOptions {
   transitionPresets?: Record<string, TransitionDefinition>;
   interaction?: OrbInteractionConfig;
   stateProfiles?: Record<string, OrbStateProfile>;
+  color?: string;
   autoStart?: boolean;
   scheduler?: OrbScheduler;
 }
