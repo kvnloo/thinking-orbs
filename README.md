@@ -140,6 +140,16 @@ Rows and columns are fixed for every frame, so animation never moves the
 surrounding layout. `threshold` can make the Braille projection sparser or
 denser for a terminal's font and contrast.
 
+## React Native
+
+The same states render on iOS and Android through `/react-native-skia` via `thinking-orbs/native`. See the Expo app in `example/`.
+
+```tsx
+import { ThinkingOrb } from 'thinking-orbs/native';
+```
+
+This staging branch prefers PR #11 over overlapping PR #2.
+
 ## Accessibility & performance
 
 - `role="img"` with a sensible per-state `aria-label` out of the box.
