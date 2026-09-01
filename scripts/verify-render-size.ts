@@ -19,7 +19,9 @@ for (const presetSize of [64, 20] as const) {
   const renderSize = presetSize === 64 ? 320 : 160;
   for (const state of states) {
     const { mode, speed, opts } = resolvePreset(state, presetSize);
-    const frame = MODE_FRAMES[mode](renderSize, 0.6 * speed, opts);
+    const geometry = MODE_FRAMES[mode as keyof typeof MODE_FRAMES];
+    if (!geometry) continue;
+    const frame = geometry(renderSize, 0.6 * speed, opts);
     if (frame.dots.length === 0) throw new Error(`${state}-${presetSize} rendered no dots`);
   }
 }

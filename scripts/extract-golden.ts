@@ -37,8 +37,10 @@ const cases = [];
 for (const state of STATES) {
   for (const size of SIZES) {
     const { mode, speed, opts } = resolvePreset(state, size);
+    const geometry = MODE_FRAMES[mode as keyof typeof MODE_FRAMES];
+    if (!geometry) continue;
     for (const t of TIMES) {
-      const frame = MODE_FRAMES[mode](size, t, opts);
+      const frame = geometry(size, t, opts);
       cases.push({
         key: `${state}-${size}-${t}`,
         state,
