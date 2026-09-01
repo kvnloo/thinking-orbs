@@ -31,6 +31,7 @@ export class OrbController {
   readonly canvas: HTMLCanvasElement;
   state: OrbStateName;
   private size: OrbSize;
+  private displaySize: number;
   private dark: boolean;
   private speed: number;
   private paused: boolean;
@@ -65,6 +66,7 @@ export class OrbController {
     this.ctx = ctx;
     this.state = options.state ?? 'working';
     this.size = options.size ?? 64;
+    this.displaySize = options.displaySize ?? this.size;
     this.dark = options.dark ?? true;
     this.speed = options.speed ?? 1;
     this.paused = options.paused ?? false;
@@ -79,7 +81,7 @@ export class OrbController {
     this.profiles = { ...options.stateProfiles };
     this.interactionConfig = normalizeInteraction(options.interaction);
     this.interaction = createInteractionState(this.scheduler.now());
-    this.dpr = resizeCanvas(this.canvas, this.size);
+    this.dpr = resizeCanvas(this.canvas, this.displaySize);
     this.cleanups.push(attachOrbDom(canvas, {
       config: () => this.interactionConfig,
       hover: (active) => {
@@ -176,9 +178,9 @@ export class OrbController {
     }
     this.lastBase = base;
     updateInteraction(this.interaction, this.interactionConfig, now, this.reducedMotion);
-    const visual = applyInteraction(base, this.size, this.interactionConfig, this.interaction);
+    const visual = applyInteraction(base, this.displaySize, this.interactionConfig, this.interaction);
     this.lastVisual = visual;
-    paintFrame(this.ctx, visual, this.size, this.dpr, this.dark, this.color);
+    paintFrame(this.ctx, visual, this.displaySize, this.dpr, this.dark, this.color);
   }
 
   on(type: TransitionEventName, listener: TransitionListener): () => void {
@@ -220,7 +222,15 @@ export class OrbController {
     if (size === this.size) return;
     this.size = size;
     this.capacity = 0;
-    this.dpr = resizeCanvas(this.canvas, this.size);
+    this.dpr = resizeCanvas(this.canvas, this.displaySize);
+    this.renderAt(this.scheduler.now());
+  }
+
+  setDisplaySize(displaySize: number): void {
+    if (displaySize === this.displaySize) return;
+    this.displaySize = displaySize;
+    this.capacity = 0;
+    this.dpr = resizeCanvas(this.canvas, this.displaySize);
     this.renderAt(this.scheduler.now());
   }
 
@@ -234,7 +244,7 @@ export class OrbController {
   }
 
   private sample(state: OrbStateName, now: number): CapturedFrame {
-    return sampleState(state, this.size, (now / 1000) * this.speed, this.seed, this.profiles);
+    return sampleState(state, this.size, (now / 1000) * this.speed, this.seed, this.profiles, this.displaySize);
   }
 
   private finishActive(): void {

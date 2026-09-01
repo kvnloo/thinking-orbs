@@ -47,6 +47,20 @@ Two tuned presets — separate designs, not a scale factor. `64` for chat-avatar
   color="#8b5cf6"     // any CSS color; overrides theme
 ```
 
+Use `renderSize` when the orb needs to occupy a larger or smaller surface. The selected preset still controls its density and motion, while the canvas is rendered directly at the requested logical size:
+
+```tsx
+<ThinkingOrb state="composing" size={64} renderSize={320} />
+```
+
+## Custom render size
+
+`size` still selects the 64 or 20 preset. Optional `renderSize` draws that same tuning at another CSS-pixel canvas size (issues #14 and #16):
+
+```tsx
+<ThinkingOrb state="working" size={64} renderSize={96} />
+```
+
 ## Theme
 
 By default, the orb is monochrome — light ink for dark backgrounds, dark ink for light backgrounds — with the mode picked automatically from the host project:

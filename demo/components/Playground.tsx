@@ -28,6 +28,8 @@ const COLORS: ReadonlyArray<{ label: string; value?: string }> = [
 
 const SPEED_MIN = 25;
 const SPEED_MAX = 300;
+const RENDER_SIZE_MIN = 64;
+const RENDER_SIZE_MAX = 320;
 
 function buildSnippet(state: OrbState, size: OrbSize, speed: number, color?: string) {
   const props = [`state="${state}"`, `size={${size}}`];
@@ -71,6 +73,7 @@ export function Playground({
 
   const snippet = buildSnippet(state, size, speed, color);
   const fillPct = ((speed - SPEED_MIN) / (SPEED_MAX - SPEED_MIN)) * 100;
+  const renderSizePct = ((renderSize - RENDER_SIZE_MIN) / (RENDER_SIZE_MAX - RENDER_SIZE_MIN)) * 100;
 
   return (
     <section className="w-full flex flex-col gap-1.5 mb-12" aria-label="Interactive playground">

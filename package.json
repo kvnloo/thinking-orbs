@@ -50,6 +50,7 @@
     "typecheck": "tsc --noEmit",
     "test": "tsx --test test/*.test.ts && vitest run",
     "test:browser": "playwright test",
+    "verify:render-size": "tsx scripts/verify-render-size.ts",
     "spec": "tsx scripts/extract-spec.ts && tsx scripts/extract-golden.ts",
     "prepublishOnly": "npm run build",
     "prepare": "npm run build"

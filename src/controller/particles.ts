@@ -24,7 +24,8 @@ export function sampleState(
   size: OrbSize,
   time: number,
   seed: number,
-  profiles: Record<string, OrbStateProfile>
+  profiles: Record<string, OrbStateProfile>,
+  displaySize?: number
 ): CapturedFrame {
   const custom = profiles[state];
   if (custom?.particles) {
@@ -46,7 +47,8 @@ export function sampleState(
     ? { mode: custom.mode, speed: custom.speed ?? 1, opts: { ...BASE_PROFILES[custom.mode], ...custom.opts } }
     : resolvePreset(state as never, size);
   const capture = createFrameCapture();
-  MODE_DRAWS[resolved.mode](capture.ctx, size, time * resolved.speed, false, resolved.opts);
+  const drawSize = displaySize ?? size;
+  MODE_DRAWS[resolved.mode](capture.ctx, drawSize, time * resolved.speed, false, resolved.opts);
   return {
     particles: capture.frame.dots.map((dot, index) => dotToParticle(dot, index)),
     lines: capture.frame.lines

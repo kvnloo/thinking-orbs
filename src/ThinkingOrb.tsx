@@ -24,6 +24,7 @@ const LABELS: Record<string, string> = {
 export function ThinkingOrb({
   state = 'working',
   size = 64,
+  renderSize,
   theme = 'auto',
   color,
   speed = 1,
@@ -50,6 +51,7 @@ export function ThinkingOrb({
   const dark = useResolvedDark(theme, canvasRef);
   const systemReduced = useReducedMotion();
   const effectiveReduced = reducedMotion ?? systemReduced;
+  const outputSize = renderSize != null && Number.isFinite(renderSize) && renderSize > 0 ? renderSize : size;
   const initialOptions = useRef<OrbControllerOptions | null>(null);
   if (!initialOptions.current) {
     initialOptions.current = {
@@ -65,7 +67,8 @@ export function ThinkingOrb({
       interaction,
       stateProfiles,
       seed,
-      color
+      color,
+      displaySize: outputSize
     };
   }
 
@@ -98,6 +101,7 @@ export function ThinkingOrb({
   }, [state, transition, onOrbTransitionStart, onOrbTransitionProgress, onOrbTransitionEnd, onOrbTransitionCancel]);
 
   useEffect(() => controller.current?.setSize(size), [size]);
+  useEffect(() => controller.current?.setDisplaySize(outputSize), [outputSize]);
   useEffect(
     () => controller.current?.setAppearance({ dark, speed, paused, reducedMotion: effectiveReduced, color: color ?? null }),
     [dark, speed, paused, effectiveReduced, color]
@@ -123,7 +127,7 @@ export function ThinkingOrb({
       role="img"
       aria-label={ariaLabel ?? LABELS[state] ?? state}
       tabIndex={tabIndex ?? focusable}
-      style={{ width: size, height: size, display: 'block', pointerEvents: 'auto', ...style }}
+      style={{ width: outputSize, height: outputSize, display: 'block', pointerEvents: 'auto', ...style }}
       {...rest}
     />
   );

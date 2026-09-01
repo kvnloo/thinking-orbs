@@ -110,6 +110,7 @@ export interface OrbControllerOptions {
   interaction?: OrbInteractionConfig;
   stateProfiles?: Record<string, OrbStateProfile>;
   color?: string;
+  displaySize?: number;
   autoStart?: boolean;
   scheduler?: OrbScheduler;
 }
