@@ -39,6 +39,26 @@ export interface OrbFrame {
 
 export type Projector = (x: number, y: number, z: number) => [number, number, number];
 
+/**
+ * The minimal 2D drawing surface the engine paints through. Structurally
+ * satisfied by a DOM CanvasRenderingContext2D; non-DOM renderers (e.g. a
+ * Skia adapter) implement it directly. The style properties are typed
+ * `string | object` so the DOM type — whose fillStyle also admits
+ * gradients and patterns — stays assignable; the engine only ever writes
+ * `rgba(r,g,b,a)` strings.
+ */
+export interface OrbCanvas2D {
+  fillStyle: string | object;
+  strokeStyle: string | object;
+  lineWidth: number;
+  beginPath(): void;
+  arc(x: number, y: number, radius: number, startAngle: number, endAngle: number): void;
+  fill(): void;
+  moveTo(x: number, y: number): void;
+  lineTo(x: number, y: number): void;
+  stroke(): void;
+}
+
 export function lerp(a: number, b: number, f: number): number {
   return a + (b - a) * f;
 }
@@ -102,7 +122,7 @@ export function makeProj(yaw: number, tilt: number, cx: number, cy: number, scal
  * ink value is mirrored (1 - white) so near dots read bright — the same
  * depth language on an inverted substrate.
  */
-export function paint(ctx: CanvasRenderingContext2D, dots: Dot[], dark: boolean, rMin = 0.3): void {
+export function paint(ctx: OrbCanvas2D, dots: Dot[], dark: boolean, rMin = 0.3): void {
   for (const d of dots) {
     const alpha = d.a ?? 1;
     const w = Math.min(1, Math.max(0, d.white));
@@ -115,7 +135,7 @@ export function paint(ctx: CanvasRenderingContext2D, dots: Dot[], dark: boolean,
 }
 
 /** Stroke pass for edge-based modes. Runs before `paint` so nodes sit on top. */
-export function paintLines(ctx: CanvasRenderingContext2D, lines: Line[], dark: boolean): void {
+export function paintLines(ctx: OrbCanvas2D, lines: Line[], dark: boolean): void {
   for (const l of lines) {
     const alpha = l.a ?? 1;
     const w = Math.min(1, Math.max(0, l.white));
@@ -151,7 +171,7 @@ export function finalizeFrame(dots: Dot[], lines: Line[], rMin = 0.3): OrbFrame 
 }
 
 /** Paint a finished frame. Lines first, so nodes sit on top of their edges. */
-export function paintFrame(ctx: CanvasRenderingContext2D, frame: OrbFrame, dark: boolean): void {
+export function paintFrame(ctx: OrbCanvas2D, frame: OrbFrame, dark: boolean): void {
   if (frame.lines.length) paintLines(ctx, frame.lines, dark);
   paint(ctx, frame.dots, dark);
 }
