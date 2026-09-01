@@ -35,6 +35,8 @@ const LABEL_OVERRIDES: Partial<Record<OrbState, string>> = {
 const HERO_PILLS: Array<{ state: OrbState; label: string }> = [
   { state: 'solving', label: 'Solving….' },
   { state: 'composing', label: 'Thinking….' },
+  { state: 'liquid', label: 'Adapting….' },
+  { state: 'nova', label: 'Generating….' }
 ];
 
 export function Examples({

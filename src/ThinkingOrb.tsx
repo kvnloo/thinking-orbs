@@ -18,7 +18,11 @@ const LABELS: Record<string, string> = {
   shaping: 'Shaping…',
   cleaning: 'Cleaning…',
   success: 'Complete',
-  error: 'Error'
+  error: 'Error',
+  cosmic: 'Processing cosmic data…',
+  nebula: 'Synthesizing ideas…',
+  liquid: 'Adapting fluid context…',
+  nova: 'Generating response…'
 };
 
 export function ThinkingOrb({

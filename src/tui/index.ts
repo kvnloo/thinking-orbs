@@ -124,7 +124,11 @@ export function renderTuiOrb(state: OrbState, options: TuiRenderOptions = {}): T
   const paint = options.paint ?? ((glyph: string) => glyph);
   const preset = resolvePreset(state, SOURCE_SIZE);
   const time = Math.max(0, options.time ?? 0) * preset.speed * Math.max(0, options.speed ?? 1);
-  const frame = MODE_FRAMES[preset.mode](SOURCE_SIZE, time, preset.opts);
+  const geometry = MODE_FRAMES[preset.mode as keyof typeof MODE_FRAMES];
+  if (!geometry) {
+    throw new Error(`thinking-orbs/tui: state "" has no dotted geometry (gradient-only cosmic modes are web/canvas)`);
+  }
+  const frame = geometry(SOURCE_SIZE, time, preset.opts);
   const buffer = new Float32Array(pixelWidth * pixelHeight);
 
   for (const line of frame.lines) rasterLine(buffer, pixelWidth, pixelHeight, line, scale, offsetX, offsetY, dark);

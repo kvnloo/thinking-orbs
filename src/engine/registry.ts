@@ -5,6 +5,7 @@ import type { ModeKey } from '../presets';
 import type { ModeDraw, ModeFrame } from './types';
 import { paintFrame } from './core';
 import { frameBraid } from './braid';
+import { drawCosmic, drawLiquid, drawNebula, drawNova } from './cosmic';
 import { frameGlobe, frameRubik, frameWave } from './lattice';
 import { frameMorph } from './morph';
 import { frameOrbits } from './orbits';
@@ -13,11 +14,10 @@ import { frameTwist } from './twist';
 import { frameWeb } from './web';
 
 /**
- * The portable surface: pure geometry, no canvas. The React Native port
- * imports exactly these functions, so its output is identical to the web's
- * by construction rather than by re-implementation.
+ * The portable dotted-geometry surface. Cosmic/nebula/liquid/nova are
+ * gradient painters (not ModeFrame) and live only on MODE_DRAWS.
  */
-export const MODE_FRAMES: Record<ModeKey, ModeFrame> = {
+export const MODE_FRAMES: Record<Exclude<ModeKey, 'cosmic' | 'nebula' | 'liquid' | 'nova'>, ModeFrame> = {
   orbits: frameOrbits,
   globe: frameGlobe,
   rubik: frameRubik,
@@ -26,15 +26,21 @@ export const MODE_FRAMES: Record<ModeKey, ModeFrame> = {
   web: frameWeb,
   braid: frameBraid,
   ribbon: frameRibbon,
-  // ring shares ribbon's geometry — the `faceOn` profile flag switches it
   ring: frameRibbon,
   morph: frameMorph
 };
 
-/** Canvas painters, derived from the geometry. The 2D-canvas binding. */
-export const MODE_DRAWS: Record<ModeKey, ModeDraw> = Object.fromEntries(
+const FRAME_DRAWS: Record<string, ModeDraw> = Object.fromEntries(
   Object.entries(MODE_FRAMES).map(([key, frame]) => [
     key,
     ((ctx, size, t, dark, opts, color) => paintFrame(ctx, frame(size, t, opts), dark, color)) as ModeDraw
   ])
-) as Record<ModeKey, ModeDraw>;
+);
+
+export const MODE_DRAWS: Record<ModeKey, ModeDraw> = {
+  ...(FRAME_DRAWS as Record<Exclude<ModeKey, 'cosmic' | 'nebula' | 'liquid' | 'nova'>, ModeDraw>),
+  cosmic: drawCosmic,
+  nebula: drawNebula,
+  liquid: drawLiquid,
+  nova: drawNova
+};

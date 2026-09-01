@@ -12,7 +12,11 @@ const STATES: Array<{ state: OrbState; blurb: string }> = [
   { state: 'composing', blurb: 'an undulating sash of bands' },
   { state: 'breathing', blurb: 'a ring slowly morphing' },
   { state: 'shaping', blurb: 'circle → triangle → square' },
-  { state: 'cleaning', blurb: 'a wring back and forth, crown first' }
+  { state: 'cleaning', blurb: 'a wring back and forth, crown first' },
+  { state: 'cosmic', blurb: 'galaxy core, star dust, glass rim' },
+  { state: 'nebula', blurb: 'atmospheric glow with a volumetric pulse' },
+  { state: 'liquid', blurb: 'organic glass bubble with interior drift' },
+  { state: 'nova', blurb: 'amber flare with prismatic edge' }
 ];
 
 export function App() {

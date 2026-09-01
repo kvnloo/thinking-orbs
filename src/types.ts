@@ -12,6 +12,10 @@ import type { CSSProperties, CanvasHTMLAttributes } from 'react';
  * - `breathing`  — a face-on ring slowly morphing
  * - `shaping`    — a dotted outline morphs circle → triangle → square
  * - `cleaning`   — the body wrings about its axis, crown leading, base trailing
+ * - `cosmic`    — swirling galaxy core with star dust and glass rim
+ * - `nebula`    — purple/magenta atmospheric glow with volumetric pulse
+ * - `liquid`    — fluid organic glass bubble with interior drift
+ * - `nova`      — amber/golden flare with prismatic edge dispersion
  */
 export type OrbState =
   | 'idle'
@@ -27,7 +31,11 @@ export type OrbState =
   | 'shaping'
   | 'cleaning'
   | 'success'
-  | 'error';
+  | 'error'
+  | 'cosmic'
+  | 'nebula'
+  | 'liquid'
+  | 'nova';
 
 /** A shipped state or an application-defined state profile name. */
 export type OrbStateName = OrbState | (string & {});

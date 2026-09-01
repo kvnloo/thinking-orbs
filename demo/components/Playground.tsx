@@ -15,7 +15,11 @@ const STATES: OrbState[] = [
   'composing',
   'breathing',
   'shaping',
-  'cleaning'
+  'cleaning',
+  'cosmic',
+  'nebula',
+  'liquid',
+  'nova'
 ];
 const SIZES: OrbSize[] = [64, 20];
 const COLORS: ReadonlyArray<{ label: string; value?: string }> = [
