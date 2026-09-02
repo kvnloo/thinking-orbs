@@ -61,6 +61,7 @@ interface Harness {
   fireIntersection: (isIntersecting: boolean) => void;
   visibilityListeners: (() => void)[];
   setVisibility: (v: string) => void;
+  setReduced: (reduced: boolean) => void;
   cleanup: () => void;
 }
 
@@ -68,14 +69,17 @@ interface Harness {
 const ioCallbacks: IntersectionObserverCallback[] = [];
 
 function stubBrowser(opts: HarnessOpts = {}): Harness {
-  const { reduced = false, dark = true, io = true, dpr = 1 } = opts;
+  const { reduced: initiallyReduced = false, dark = true, io = true, dpr = 1 } = opts;
 
   const raf = vi.fn((_cb: FrameRequestCallback) => 1);
   const caf = vi.fn();
 
+  // track every media-query listener so a live reduced-motion change can fire
+  let reducedFlag = initiallyReduced;
+  const mqlReduced: { type: string; fn: unknown }[] = [];
   const matchMedia = vi.fn((q: string) => {
-    const matches = /reduced-motion/.test(q) ? reduced : /dark/.test(q) ? dark : false;
-    const listeners: { type: string; fn: unknown }[] = [];
+    const matches = /reduced-motion/.test(q) ? reducedFlag : /dark/.test(q) ? dark : false;
+    const listeners = /reduced-motion/.test(q) ? mqlReduced : [];
     return {
       matches,
       addEventListener: (type: string, fn: unknown) => listeners.push({ type, fn }),
@@ -142,6 +146,12 @@ function stubBrowser(opts: HarnessOpts = {}): Harness {
     setVisibility: (v: string) => {
       visibilityState = v;
       visibilityListeners.forEach((fn) => fn());
+    },
+    setReduced: (next: boolean) => {
+      reducedFlag = next;
+      for (const l of mqlReduced) {
+        if (l.type === 'change') (l.fn as (e: { matches: boolean }) => void)({ matches: next });
+      }
     },
     cleanup: () => vi.unstubAllGlobals(),
   };
@@ -262,6 +272,25 @@ describe('createOrbController', () => {
 
     it('exposes the engine reduced-motion frame time', () => {
       expect(REDUCED_MOTION_T).toBe(0.6);
+    });
+
+    it('reacts live to a prefers-reduced-motion change: stops the loop and draws a static frame, then resumes', () => {
+      const ctl = make();
+      // running before the change
+      expect(h.raf).toHaveBeenCalled();
+      expect(h.caf).not.toHaveBeenCalled();
+
+      const fillsBeforeToggle = ctx.fills;
+      h.setReduced(true);
+      // animate loop stopped, static frame drawn (a fresh fill, no new rAF)
+      expect(h.caf).toHaveBeenCalled();
+      const rafCallsWhileReduced = h.raf.mock.calls.length;
+      expect(ctx.fills).toBeGreaterThan(fillsBeforeToggle);
+
+      h.setReduced(false);
+      // the animate loop restarts
+      expect(h.raf.mock.calls.length).toBeGreaterThan(rafCallsWhileReduced);
+      ctl.dispose();
     });
   });
 
