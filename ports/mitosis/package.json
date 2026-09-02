@@ -1,0 +1,26 @@
+{
+  "name": "thinking-orbs-mitosis",
+  "version": "0.1.0",
+  "description": "ThinkingOrb authored in Mitosis and compiled to React, Vue, Svelte and Solid over the framework-neutral thinking-orbs/engine",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "mitosis": "mitosis build",
+    "build": "npm run mitosis",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.typecheck.json --noEmit"
+  },
+  "dependencies": {
+    "@builder.io/mitosis": "0.14.0",
+    "thinking-orbs": "^0.3.1"
+  },
+  "devDependencies": {
+    "@builder.io/mitosis-cli": "0.14.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.3.0",
+    "vitest": "^3.2.7"
+  },
+  "license": "MIT"
+}
