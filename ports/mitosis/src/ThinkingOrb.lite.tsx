@@ -1,13 +1,3 @@
-// The Mitosis-authored ThinkingOrb. One source compiles to React, Vue,
-// Svelte and Solid; every imperative behaviour lives in the shared
-// `orb-controller`, which drives the framework-neutral `thinking-orbs/engine`
-// geometry. This component only owns the canvas, its ref, and the prop→props
-// wiring, so the generated outputs stay thin and identical in behaviour.
-//
-// Note: the override label prop is `ariaLabel` (camelCase) because Mitosis'
-// Vue generator cannot reference a bracketed `props['aria-label']`; it is
-// still rendered as an `aria-label` attribute on the canvas.
-
 import { onMount, onUnMount, onUpdate, useRef } from '@builder.io/mitosis';
 import {
   attachController,

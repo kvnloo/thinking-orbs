@@ -33,14 +33,14 @@ describe('generated framework outputs (real mitosis build)', () => {
   let buildLog: string;
 
   beforeAll(() => {
-    buildLog = execSync(`${path.join(ROOT, 'node_modules/.bin/mitosis')} build`, {
+    buildLog = execSync('npm run build', {
       cwd: ROOT,
       stdio: ['ignore', 'pipe', 'pipe'],
     }).toString();
   });
 
   afterAll(() => {
-    // leave the generated output in place for inspection; it is gitignored
+    // Leave the committed, post-processed generated output in place for inspection.
   });
 
   it('generates a component and the shared controller for every target', () => {
@@ -117,6 +117,21 @@ describe('generated framework outputs (real mitosis build)', () => {
       if (t === 'vue') expect(component).toContain('$refs.canvas');
       if (t === 'svelte') expect(component).toContain('bind:this={canvas}');
       if (t === 'solid') expect(component).toContain('ref={canvas!}');
+    });
+
+    it(`${t}: generated output is real executable code, not swallowed by a leading // comment`, () => {
+      const component = read(`${t}/${componentRel}`);
+      // regression guard: the Mitosis React generator folds the whole component
+      // onto a leading `//` comment line, commenting the program out. The real
+      // toolchain compile (`compile:check`) is the authoritative catch; this
+      // cheap read makes the plain test suite fail too.
+      for (const line of component.split('\n')) {
+        if (/\bexport default\b/.test(line)) {
+          expect(line.trimStart().startsWith('//'), 'export default must not sit inside a comment line').toBe(
+            false,
+          );
+        }
+      }
     });
   }
 
