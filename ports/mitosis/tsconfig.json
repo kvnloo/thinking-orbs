@@ -9,7 +9,8 @@
     "noEmit": true,
     "types": ["node"],
     "paths": {
-      "thinking-orbs/engine": ["../../src/engine/index.ts"]
+      "thinking-orbs/engine": ["../../src/engine/index.ts"],
+      "react": ["./node_modules/@types/react/index.d.ts"]
     }
   },
   "include": ["src", "test", "mitosis.config.ts"]
