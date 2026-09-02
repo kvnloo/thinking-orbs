@@ -88,8 +88,6 @@ Framework ports live in `ports/`, each including its own parity/verification har
 
 - [`ports/mitosis`](ports/mitosis) — one Mitosis source compiled to **React, Vue, Svelte and Solid** over `thinking-orbs/engine`, with real-toolchain compile checks and an npm-pack/import consumer check.
 - [`ports/react-native`](ports/react-native) — Skia + Reanimated package for iOS & Android.
-- [`ports/three`](ports/three) — thin Three.js renderer over `thinking-orbs/engine`.
-- [`ports/android`](ports/android) — Jetpack Compose port with golden-vector JVM tests.
 
 ## License
 
