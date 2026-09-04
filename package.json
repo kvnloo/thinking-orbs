@@ -51,7 +51,7 @@
     "test": "tsx --test test/*.test.ts",
     "spec": "tsx scripts/extract-spec.ts && tsx scripts/extract-golden.ts",
     "prepublishOnly": "npm run build",
-    "prepare": "npm run build"
+    "prepare": "node -e \"import('node:fs').then(fs=>fs.promises.access('dist/tui.es.js')).catch(()=>import('node:child_process').then(cp=>{const r=cp.spawnSync('npm',['run','build'],{stdio:'inherit'});if(r.status)process.exit(r.status??1)}))\""
   },
   "peerDependencies": {
     "react": ">=18.0.0"
