@@ -1,0 +1,1 @@
+{"name":"thinking-orbs-three","version":"0.1.0","type":"module","main":"src/index.ts","scripts":{"test":"vitest run","typecheck":"tsc --noEmit"},"peerDependencies":{"three":">=0.160.0"},"dependencies":{"thinking-orbs":"^0.3.1"},"devDependencies":{"three":"^0.170.0","typescript":"^5.3.0","vitest":"^3.2.7"},"license":"MIT"}
